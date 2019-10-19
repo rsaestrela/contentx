@@ -1,4 +1,4 @@
-package contentx
+package contentx.core
 
 import io.reactivex.Flowable
 import io.reactivex.Maybe
@@ -13,7 +13,6 @@ abstract class AbstractNode(private val name: String,
 
     protected val id: String = UUID.randomUUID().toString()
 
-    @Volatile
     protected var children: List<Node> = arrayListOf()
 
     override fun name(): Single<String> {
@@ -36,7 +35,6 @@ abstract class AbstractNode(private val name: String,
         return Single.just(properties)
     }
 
-    @Synchronized
     override fun putProperty(property: String, value: Any): Single<Node> {
         properties = properties.put(property, value)
         return Single.just(this)

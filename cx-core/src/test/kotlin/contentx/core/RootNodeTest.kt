@@ -1,4 +1,4 @@
-package contentx
+package contentx.core
 
 import kotlinx.collections.immutable.persistentMapOf
 import java.lang.UnsupportedOperationException

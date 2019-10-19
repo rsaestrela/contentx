@@ -1,4 +1,4 @@
-package contentx
+package contentx.core
 
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf

@@ -1,6 +1,5 @@
 plugins {
     id("org.jetbrains.kotlin.jvm") version "1.3.50"
-    application
 }
 
 repositories {
@@ -15,8 +14,4 @@ dependencies {
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
-}
-
-application {
-    mainClassName = "contentx.AppKt"
 }

@@ -1,4 +1,4 @@
-package contentx
+package contentx.core
 
 import io.reactivex.Flowable
 import io.reactivex.Maybe

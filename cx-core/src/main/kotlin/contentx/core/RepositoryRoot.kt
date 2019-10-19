@@ -1,3 +1,3 @@
-package contentx
+package contentx.core
 
 interface RepositoryRoot : Node

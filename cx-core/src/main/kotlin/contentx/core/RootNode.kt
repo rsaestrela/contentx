@@ -1,4 +1,4 @@
-package contentx
+package contentx.core
 
 import io.reactivex.Single
 import kotlinx.collections.immutable.persistentMapOf
