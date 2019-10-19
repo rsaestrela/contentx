@@ -2,3 +2,6 @@
 .idea
 .gradle
 build
+*.class
+/out/test/classes/META-INF/contentx.kotlin_module
+/out/production/classes/META-INF/contentx.kotlin_module

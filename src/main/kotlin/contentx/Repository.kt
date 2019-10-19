@@ -1,7 +1,9 @@
 package contentx
 
+import io.reactivex.Single
+
 interface Repository {
 
-    fun root(): Node
+    fun root(): Single<RepositoryRoot>
 
 }

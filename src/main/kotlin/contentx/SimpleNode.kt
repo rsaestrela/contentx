@@ -1,11 +1,18 @@
 package contentx
 
-import java.util.*
+import io.reactivex.Single
+import kotlinx.collections.immutable.PersistentMap
 
-class SimpleNode : Node {
+open class SimpleNode(name: String, parent: Node?, properties: PersistentMap<String, Any>) : AbstractNode(name, parent, properties) {
 
-    override fun id(): String {
-        return UUID.randomUUID().toString()
+    override fun id(): Single<String> {
+        return Single.just(id)
+    }
+
+    override fun addChild(name: String, properties: PersistentMap<String, Any>): Single<Node> {
+        val node = SimpleNode(name, this, properties)
+        children = children + node
+        return Single.just(node)
     }
 
 }
