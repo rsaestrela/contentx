@@ -3,24 +3,36 @@ package contentx.core
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toFlowable
 import kotlinx.collections.immutable.PersistentMap
 import java.util.*
 
-abstract class AbstractNode(private val name: String,
-                            private val parent: Node?,
-                            private var properties: PersistentMap<String, Any>) : Node {
+abstract class AbstractNode() : Node {
 
-    protected val id: String = UUID.randomUUID().toString()
+    private var parent: Node? = null
 
     protected var children: List<Node> = arrayListOf()
 
+    private lateinit var properties: PersistentMap<String, Any>
+
+    constructor(name: String,
+                parent: Node?,
+                properties: PersistentMap<String, Any>) : this() {
+        this.parent = parent
+        this.properties = initProperties(properties, name)
+    }
+
+    private fun initProperties(properties: PersistentMap<String, Any>, name: String): PersistentMap<String, Any> {
+        return properties.put("id", UUID.randomUUID().toString()).put("name", name)
+    }
+
     override fun name(): Single<String> {
-        return Single.just(name)
+        return Single.just(properties["name"] as String)
     }
 
     override fun path(): Single<String> {
-        return parent!!.path().map { p -> p.plus("/").plus(name) }
+        return parent!!.path().zipWith(name(), BiFunction { p, t -> p.plus("/").plus(t) })
     }
 
     override fun parent(): Maybe<Node?> {

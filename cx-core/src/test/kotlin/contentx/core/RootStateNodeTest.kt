@@ -1,10 +1,9 @@
 package contentx.core
 
 import kotlinx.collections.immutable.persistentMapOf
-import java.lang.UnsupportedOperationException
 import kotlin.test.*
 
-internal class RootNodeTest {
+internal class RootStateNodeTest {
 
     @Test
     fun shouldCreateRootNode() {
@@ -45,13 +44,13 @@ internal class RootNodeTest {
     fun shouldBeAbleToCreateRootChildrenNodes() {
         val repository: Repository = StateRepository()
         val root = repository.root().blockingGet()
-        for (i in 1..1000) {
+        for (i in 1..10) {
             val child = root.addChild("test-child-${i}", persistentMapOf()).blockingGet()
             val last = root.children().blockingLast()
             assertEquals(child, last)
             last.children().test().assertValueCount(0)
         }
-        root.children().test().assertValueCount(1000)
+        root.children().test().assertValueCount(10)
     }
 
 }

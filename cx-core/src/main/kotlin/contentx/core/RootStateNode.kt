@@ -3,7 +3,7 @@ package contentx.core
 import io.reactivex.Single
 import kotlinx.collections.immutable.persistentMapOf
 
-class RootNode : SimpleNode("root", null, persistentMapOf()), RepositoryRoot {
+class RootStateNode : SimpleStateNode("root", null, persistentMapOf()), RepositoryRoot {
 
     override fun id(): Single<String> {
         return Single.just("root")

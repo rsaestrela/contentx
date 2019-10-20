@@ -6,7 +6,7 @@ import kotlinx.collections.immutable.persistentMapOf
 import org.junit.Test
 import kotlin.test.assertEquals
 
-internal class SimpleNodeTest {
+internal class SimpleStateNodeTest {
 
     @Test
     fun shouldCreateChildrenNodes() {
@@ -23,7 +23,9 @@ internal class SimpleNodeTest {
             val child = parent.addChild("test-child-${i}", persistentMapOf()).blockingGet()
             val last = parent.children().blockingLast()
             assertEquals(parent, child.parent().blockingGet())
-            assertEquals(persistentMapOf(), child.properties().blockingGet())
+            val properties = child.properties().blockingGet()
+            assertEquals(36, (properties["id"] as String).length)
+            assertEquals("test-child-${i}", properties["name"] as String)
             assertEquals(36, child.id().blockingGet().length)
             assertEquals(child, last)
             last.children().test().assertValueCount(0)
@@ -40,7 +42,16 @@ internal class SimpleNodeTest {
         val node = root.addChild("test-child", propertiesMap).blockingGet()
         node.properties().test().assertValueCount(1)
         val properties = node.properties().blockingGet()
-        assertEquals(propertiesMap, properties)
+        assertEquals(36, (properties["id"] as String).length)
+        assertEquals("test-child", properties["name"] as String)
+        assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)
+        assertEquals(propertiesMap["property2"] as Short, properties["property2"] as Short)
+        assertEquals(propertiesMap["property3"] as Int, properties["property3"] as Int)
+        assertEquals(propertiesMap["property4"] as Long, properties["property4"] as Long)
+        assertEquals(propertiesMap["property5"] as Float, properties["property5"] as Float)
+        assertEquals(propertiesMap["property6"] as Char, properties["property6"] as Char)
+        assertEquals(propertiesMap["property7"] as Boolean, properties["property7"] as Boolean)
+        assertEquals(propertiesMap["property8"] as Array<*>, properties["property8"] as Array<*>)
     }
 
     @Test
@@ -53,7 +64,16 @@ internal class SimpleNodeTest {
                 .blockingGet()
         node.properties().test().assertValueCount(1)
         val properties = node.properties().blockingGet()
-        assertEquals(propertiesMap, properties)
+        assertEquals(36, (properties["id"] as String).length)
+        assertEquals("test-child", properties["name"] as String)
+        assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)
+        assertEquals(propertiesMap["property2"] as Short, properties["property2"] as Short)
+        assertEquals(propertiesMap["property3"] as Int, properties["property3"] as Int)
+        assertEquals(propertiesMap["property4"] as Long, properties["property4"] as Long)
+        assertEquals(propertiesMap["property5"] as Float, properties["property5"] as Float)
+        assertEquals(propertiesMap["property6"] as Char, properties["property6"] as Char)
+        assertEquals(propertiesMap["property7"] as Boolean, properties["property7"] as Boolean)
+        assertEquals(propertiesMap["property8"] as Array<*>, properties["property8"] as Array<*>)
     }
 
     private fun propertiesMap(): PersistentMap<String, Any> {
@@ -65,8 +85,7 @@ internal class SimpleNodeTest {
                 Pair("property5", Float.MAX_VALUE),
                 Pair("property6", Char.MAX_VALUE),
                 Pair("property7", true),
-                Pair("property8", arrayOf(Int.MIN_VALUE)),
-                Pair("property9", "test")
+                Pair("property8", arrayOf(Int.MIN_VALUE))
         )
     }
 
