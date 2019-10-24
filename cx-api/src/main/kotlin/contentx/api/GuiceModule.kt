@@ -3,7 +3,7 @@ package contentx.api
 import com.google.inject.AbstractModule
 import com.google.inject.multibindings.Multibinder
 import contentx.core.Repository
-import contentx.core.StateRepository
+import contentx.core.state.StateRepository
 import ratpack.handling.HandlerDecorator
 
 class GuiceModule : AbstractModule() {

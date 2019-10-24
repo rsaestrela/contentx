@@ -1,18 +1,21 @@
-package contentx.core
+package contentx.core.state
 
+import contentx.core.Node
+import contentx.core.Property
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.toFlowable
 import kotlinx.collections.immutable.PersistentMap
+import kotlinx.collections.immutable.persistentListOf
 import java.util.*
 
-abstract class AbstractNode() : Node {
+abstract class AbstractStateNode() : Node {
 
     private var parent: Node? = null
 
-    protected var children: List<Node> = arrayListOf()
+    protected var children: List<Node> = persistentListOf()
 
     private lateinit var properties: PersistentMap<String, Any>
 
@@ -24,15 +27,19 @@ abstract class AbstractNode() : Node {
     }
 
     private fun initProperties(properties: PersistentMap<String, Any>, name: String): PersistentMap<String, Any> {
-        return properties.put("id", UUID.randomUUID().toString()).put("name", name)
+        return properties.put(Property.ID.key, UUID.randomUUID().toString()).put(Property.NAME.key, name)
     }
 
-    override fun name(): Single<String> {
-        return Single.just(properties["name"] as String)
+    override fun name(): String {
+        return properties[Property.NAME.key] as String
+    }
+
+    override fun properties(): Map<String, Any> {
+        return properties
     }
 
     override fun path(): Single<String> {
-        return parent!!.path().zipWith(name(), BiFunction { p, t -> p.plus("/").plus(t) })
+        return parent!!.path().zipWith(Single.just(name()), BiFunction { p, t -> p.plus("/").plus(t) })
     }
 
     override fun parent(): Maybe<Node?> {
@@ -41,10 +48,6 @@ abstract class AbstractNode() : Node {
 
     override fun children(): Flowable<Node> {
         return children.toFlowable()
-    }
-
-    override fun properties(): Single<PersistentMap<String, Any>> {
-        return Single.just(properties)
     }
 
     override fun putProperty(property: String, value: Any): Single<Node> {

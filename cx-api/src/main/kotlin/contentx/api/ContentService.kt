@@ -1,10 +1,10 @@
 package contentx.api
 
-import contentx.core.RepositoryRoot
+import contentx.core.Node
 import io.reactivex.Single
 
 interface ContentService {
 
-    fun getContent(): Single<RepositoryRoot>
+    fun getContent(): Single<Node>
 
 }

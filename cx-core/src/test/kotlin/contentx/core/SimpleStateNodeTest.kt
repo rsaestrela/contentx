@@ -1,5 +1,6 @@
 package contentx.core
 
+import contentx.core.state.StateRepository
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.persistentHashMapOf
 import kotlinx.collections.immutable.persistentMapOf
@@ -23,10 +24,10 @@ internal class SimpleStateNodeTest {
             val child = parent.addChild("test-child-${i}", persistentMapOf()).blockingGet()
             val last = parent.children().blockingLast()
             assertEquals(parent, child.parent().blockingGet())
-            val properties = child.properties().blockingGet()
+            val properties = child.properties()
             assertEquals(36, (properties["id"] as String).length)
             assertEquals("test-child-${i}", properties["name"] as String)
-            assertEquals(36, child.id().blockingGet().length)
+            assertEquals(36, child.id().length)
             assertEquals(child, last)
             last.children().test().assertValueCount(0)
             last.parent().test().assertValueCount(1)
@@ -40,8 +41,7 @@ internal class SimpleStateNodeTest {
         val root = repository.root().blockingGet()
         val propertiesMap = propertiesMap()
         val node = root.addChild("test-child", propertiesMap).blockingGet()
-        node.properties().test().assertValueCount(1)
-        val properties = node.properties().blockingGet()
+        val properties = node.properties()
         assertEquals(36, (properties["id"] as String).length)
         assertEquals("test-child", properties["name"] as String)
         assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)
@@ -62,8 +62,7 @@ internal class SimpleStateNodeTest {
         val node = root.addChild("test-child", persistentMapOf())
                 .doOnSuccess { c -> propertiesMap.forEach { c.putProperty(it.key, it.value) } }
                 .blockingGet()
-        node.properties().test().assertValueCount(1)
-        val properties = node.properties().blockingGet()
+        val properties = node.properties()
         assertEquals(36, (properties["id"] as String).length)
         assertEquals("test-child", properties["name"] as String)
         assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)

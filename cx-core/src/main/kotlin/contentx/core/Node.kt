@@ -7,9 +7,11 @@ import kotlinx.collections.immutable.PersistentMap
 
 interface Node {
 
-    fun id(): Single<String>
+    fun id(): String
 
-    fun name(): Single<String>
+    fun name(): String
+
+    fun properties(): Map<String, Any>
 
     fun path(): Single<String>
 
@@ -18,8 +20,6 @@ interface Node {
     fun children(): Flowable<Node>
 
     fun addChild(name: String, properties: PersistentMap<String, Any>): Single<Node>
-
-    fun properties(): Single<PersistentMap<String, Any>>
 
     fun putProperty(property: String, value: Any): Single<Node>
 

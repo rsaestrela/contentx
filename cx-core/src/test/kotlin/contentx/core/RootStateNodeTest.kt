@@ -1,5 +1,6 @@
 package contentx.core
 
+import contentx.core.state.StateRepository
 import kotlinx.collections.immutable.persistentMapOf
 import kotlin.test.*
 
@@ -10,8 +11,8 @@ internal class RootStateNodeTest {
         val repository: Repository = StateRepository()
         val root = repository.root().blockingGet()
         assertNotNull(root)
-        assertEquals(root.id().blockingGet(), "root")
-        assertEquals(root.name().blockingGet(), "root")
+        assertEquals(root.id(), "root")
+        assertEquals(root.name(), "root")
         assertEquals(root.path().blockingGet(), "/root")
     }
 
