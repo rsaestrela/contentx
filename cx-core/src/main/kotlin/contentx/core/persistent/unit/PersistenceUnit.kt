@@ -5,7 +5,7 @@ import org.reactivestreams.Publisher
 
 interface PersistenceUnit<O> {
 
-    fun insert(pNode: PNode): Publisher<O>
+    fun insert(pNode: PNode): Publisher<PNode>
 
     fun findByProperty(property: String, value: String): Publisher<PNode>
 

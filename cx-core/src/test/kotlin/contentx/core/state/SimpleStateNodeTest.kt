@@ -1,9 +1,7 @@
-package contentx.core
+package contentx.core.state
 
-import contentx.core.state.StateRepository
-import kotlinx.collections.immutable.PersistentMap
-import kotlinx.collections.immutable.persistentHashMapOf
-import kotlinx.collections.immutable.persistentMapOf
+import contentx.core.Node
+import contentx.core.Repository
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -21,12 +19,11 @@ internal class SimpleStateNodeTest {
             return
         }
         for (i in 1..5) {
-            val child = parent.addChild("test-child-${i}", persistentMapOf()).blockingGet()
+            val child = parent.addChild("test-child-${i}", mapOf()).blockingGet()
             val last = parent.children().blockingLast()
             assertEquals(parent, child.parent().blockingGet())
-            val properties = child.properties()
-            assertEquals(36, (properties["id"] as String).length)
-            assertEquals("test-child-${i}", properties["name"] as String)
+            assertEquals(36, child.id().length)
+            assertEquals("test-child-${i}", child.name())
             assertEquals(36, child.id().length)
             assertEquals(child, last)
             last.children().test().assertValueCount(0)
@@ -42,8 +39,8 @@ internal class SimpleStateNodeTest {
         val propertiesMap = propertiesMap()
         val node = root.addChild("test-child", propertiesMap).blockingGet()
         val properties = node.properties()
-        assertEquals(36, (properties["id"] as String).length)
-        assertEquals("test-child", properties["name"] as String)
+        assertEquals(36, node.id().length)
+        assertEquals("test-child", node.name())
         assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)
         assertEquals(propertiesMap["property2"] as Short, properties["property2"] as Short)
         assertEquals(propertiesMap["property3"] as Int, properties["property3"] as Int)
@@ -59,12 +56,12 @@ internal class SimpleStateNodeTest {
         val repository: Repository = StateRepository()
         val root = repository.root().blockingGet()
         val propertiesMap = propertiesMap()
-        val node = root.addChild("test-child", persistentMapOf())
+        val node = root.addChild("test-child", mapOf())
                 .doOnSuccess { c -> propertiesMap.forEach { c.putProperty(it.key, it.value) } }
                 .blockingGet()
         val properties = node.properties()
-        assertEquals(36, (properties["id"] as String).length)
-        assertEquals("test-child", properties["name"] as String)
+        assertEquals(36, node.id().length)
+        assertEquals("test-child", node.name())
         assertEquals(propertiesMap["property1"] as Byte, properties["property1"] as Byte)
         assertEquals(propertiesMap["property2"] as Short, properties["property2"] as Short)
         assertEquals(propertiesMap["property3"] as Int, properties["property3"] as Int)
@@ -75,8 +72,8 @@ internal class SimpleStateNodeTest {
         assertEquals(propertiesMap["property8"] as Array<*>, properties["property8"] as Array<*>)
     }
 
-    private fun propertiesMap(): PersistentMap<String, Any> {
-        return persistentHashMapOf(
+    private fun propertiesMap(): Map<String, Any> {
+        return mapOf(
                 Pair("property1", Byte.MAX_VALUE),
                 Pair("property2", Short.MAX_VALUE),
                 Pair("property3", Int.MAX_VALUE),

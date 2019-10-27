@@ -1,6 +1,5 @@
 package contentx.api
 
-import contentx.core.Node
 import contentx.core.Repository
 import contentx.core.RepositoryRoot
 import io.reactivex.Single
@@ -13,7 +12,7 @@ class ContentServiceImpl : ContentService {
     @Inject
     lateinit var stateRepository: Repository
 
-    override fun getContent(): Single<Node> {
+    override fun getContent(): Single<RepositoryRoot> {
         return stateRepository.root()
     }
 

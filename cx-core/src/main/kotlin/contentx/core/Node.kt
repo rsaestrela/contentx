@@ -3,7 +3,6 @@ package contentx.core
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
-import kotlinx.collections.immutable.PersistentMap
 
 interface Node {
 
@@ -19,8 +18,8 @@ interface Node {
 
     fun children(): Flowable<Node>
 
-    fun addChild(name: String, properties: PersistentMap<String, Any>): Single<Node>
+    fun addChild(name: String, properties: Map<String, Any>): Single<Node>
 
-    fun putProperty(property: String, value: Any): Single<Node>
+    fun putProperty(property: String, value: Any): Maybe<Node>
 
 }

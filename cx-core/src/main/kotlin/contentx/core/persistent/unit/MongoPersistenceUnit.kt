@@ -1,23 +1,60 @@
 package contentx.core.persistent.unit
 
+import com.mongodb.MongoClientSettings
+import com.mongodb.MongoCredential
 import com.mongodb.client.model.Filters
 import com.mongodb.reactivestreams.client.MongoClients
 import com.mongodb.reactivestreams.client.MongoCollection
 import com.mongodb.reactivestreams.client.Success
 import contentx.core.Property
 import contentx.core.persistent.PNode
+import io.reactivex.Single
+import org.bson.codecs.configuration.CodecRegistries.fromProviders
+import org.bson.codecs.configuration.CodecRegistries.fromRegistries
+import org.bson.codecs.configuration.CodecRegistry
+import org.bson.codecs.pojo.PojoCodecProvider
 import org.reactivestreams.Publisher
 
-class MongoPersistenceUnit : PersistenceUnit<Success> {
+class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential) : PersistenceUnit<Success> {
 
-    private val pu: MongoCollection<PNode> = MongoClients.create().getDatabase("contentx").getCollection("data", PNode::class.java)
+    private val codecRegistry: CodecRegistry = getCodecRegistry()
 
-    override fun insert(pNode: PNode): Publisher<Success> {
-        return pu.insertOne(pNode)
+    private val settings: MongoClientSettings = getSettings(mongoRepositoryCredential)
+
+    private val pu: MongoCollection<PNode> = getCollection(mongoRepositoryCredential)
+
+    override fun insert(pNode: PNode): Publisher<PNode> {
+        fromRegistries(MongoClients.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build()))
+        return Single.fromPublisher(pu.insertOne(pNode))
+                .flatMapPublisher { findByProperty(Property.ID.key, pNode._id) }
     }
 
     override fun findByProperty(property: String, value: String): Publisher<PNode> {
         return pu.find(Filters.eq(Property.ID.key, value), PNode::class.java)
+    }
+
+    private fun getCodecRegistry(): CodecRegistry {
+        return fromRegistries(
+                MongoClients.getDefaultCodecRegistry(),
+                fromProviders(PojoCodecProvider.builder().automatic(true).build())
+        )
+    }
+
+    private fun getSettings(mongoRepositoryCredential: MongoRepositoryCredential): MongoClientSettings {
+        return MongoClientSettings.builder()
+                .credential(MongoCredential.createCredential(
+                        mongoRepositoryCredential.user,
+                        mongoRepositoryCredential.database,
+                        mongoRepositoryCredential.password.toCharArray()))
+                .codecRegistry(codecRegistry)
+                .build()
+    }
+
+    private fun getCollection(mongoRepositoryCredential: MongoRepositoryCredential): MongoCollection<PNode> {
+        return MongoClients.create(settings)
+                .getDatabase(mongoRepositoryCredential.database)
+                .getCollection(mongoRepositoryCredential.collection, PNode::class.java)
     }
 
 }

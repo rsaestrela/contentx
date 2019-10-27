@@ -1,7 +1,7 @@
 package contentx.core
 
 enum class Property(val key: String) {
-    ID("id"),
+    ID("_id"),
     NAME("name"),
     PARENT("parent"),
     ROOT("root")

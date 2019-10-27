@@ -1,12 +1,12 @@
 package contentx.core.state
 
-import contentx.core.Node
 import contentx.core.Repository
+import contentx.core.RepositoryRoot
 import io.reactivex.Single
 
 class StateRepository : Repository {
 
-    override fun root(): Single<Node> {
+    override fun root(): Single<RepositoryRoot> {
         val root = RootStateNode()
         return Single.just(root)
     }

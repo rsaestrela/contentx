@@ -4,6 +4,6 @@ import io.reactivex.Single
 
 interface Repository {
 
-    fun root(): Single<Node>
+    fun root(): Single<RepositoryRoot>
 
 }
