@@ -9,8 +9,8 @@ import kotlin.test.assertEquals
 internal class RootPersistentNodeTest {
 
     private val repositoryCredential = MongoRepositoryCredential.Builder()
-            .user("raul")
-            .password("")
+            .user("tester")
+            .password("password")
             .database("contentx")
             .collection("data")
             .build()
