@@ -5,7 +5,6 @@ import com.mongodb.MongoCredential
 import com.mongodb.client.model.Filters
 import com.mongodb.reactivestreams.client.MongoClients
 import com.mongodb.reactivestreams.client.MongoCollection
-import com.mongodb.reactivestreams.client.Success
 import contentx.core.Property
 import contentx.core.persistent.PNode
 import io.reactivex.Single
@@ -15,13 +14,13 @@ import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.reactivestreams.Publisher
 
-class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential) : PersistenceUnit<Success> {
+open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential) : PersistenceUnit {
 
     private val codecRegistry: CodecRegistry = getCodecRegistry()
 
     private val settings: MongoClientSettings = getSettings(mongoRepositoryCredential)
 
-    private val pu: MongoCollection<PNode> = getCollection(mongoRepositoryCredential)
+    protected val pu: MongoCollection<PNode> = getCollection(mongoRepositoryCredential)
 
     override fun insert(pNode: PNode): Publisher<PNode> {
         fromRegistries(MongoClients.getDefaultCodecRegistry(),
@@ -31,7 +30,7 @@ class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential)
     }
 
     override fun findByProperty(property: String, value: String): Publisher<PNode> {
-        return pu.find(Filters.eq(Property.ID.key, value), PNode::class.java)
+        return pu.find(Filters.eq(property, value), PNode::class.java)
     }
 
     private fun getCodecRegistry(): CodecRegistry {

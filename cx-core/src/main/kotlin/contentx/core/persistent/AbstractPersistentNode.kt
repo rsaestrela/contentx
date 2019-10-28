@@ -9,8 +9,8 @@ import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.reactivestreams.Publisher
 
-abstract class AbstractPersistentNode<O>(protected val pNode: PNode,
-                                         protected val pu: PersistenceUnit<O>) : Node {
+abstract class AbstractPersistentNode(protected val pNode: PNode,
+                                      protected val pu: PersistenceUnit) : Node {
 
     override fun name(): String {
         return pNode.name

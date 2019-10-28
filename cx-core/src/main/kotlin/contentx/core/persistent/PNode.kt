@@ -37,15 +37,15 @@ class PNode {
             return pNode
         }
 
-        fun <O> fromPNode(pNode: PNode, pu: PersistenceUnit<O>): Single<RepositoryRoot> {
+        fun fromPNode(pNode: PNode, pu: PersistenceUnit): Single<RepositoryRoot> {
             return Single.just(pNode).map { p -> RootPersistentNode(p, pu) }
         }
 
-        fun <O> fromNode(pn: PNode, pu: PersistenceUnit<O>): Node {
+        fun fromNode(pn: PNode, pu: PersistenceUnit): Node {
             return SimplePersistentNode(pn, pu)
         }
 
-        fun <O> maybeSimple(pn: Single<PNode>, pu: PersistenceUnit<O>): Maybe<Node> {
+        fun maybeSimple(pn: Single<PNode>, pu: PersistenceUnit): Maybe<Node> {
             return pn.flatMapMaybe { p -> Maybe.just(SimplePersistentNode(p, pu)) }
         }
 

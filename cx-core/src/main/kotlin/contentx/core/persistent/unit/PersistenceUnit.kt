@@ -3,7 +3,7 @@ package contentx.core.persistent.unit
 import contentx.core.persistent.PNode
 import org.reactivestreams.Publisher
 
-interface PersistenceUnit<O> {
+interface PersistenceUnit {
 
     fun insert(pNode: PNode): Publisher<PNode>
 

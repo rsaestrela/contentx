@@ -4,7 +4,7 @@ import contentx.core.Node
 import contentx.core.persistent.unit.PersistenceUnit
 import io.reactivex.Single
 
-open class SimplePersistentNode<O>(pNode: PNode, pu: PersistenceUnit<O>) : AbstractPersistentNode<O>(pNode, pu) {
+open class SimplePersistentNode(pNode: PNode, pu: PersistenceUnit) : AbstractPersistentNode(pNode, pu) {
 
     override fun id(): String {
         return pNode._id
