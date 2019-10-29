@@ -51,4 +51,8 @@ class PNode {
 
     }
 
+    override fun toString(): String {
+        return "[_id=$_id, name=$name]"
+    }
+
 }

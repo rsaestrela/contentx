@@ -13,8 +13,12 @@ import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.reactivestreams.Publisher
+import com.google.common.flogger.FluentLogger
+
 
 open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential) : PersistenceUnit {
+
+    private val logger = FluentLogger.forEnclosingClass()
 
     private val codecRegistry: CodecRegistry = getCodecRegistry()
 
@@ -23,6 +27,7 @@ open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCreden
     protected val pu: MongoCollection<PNode> = getCollection(mongoRepositoryCredential)
 
     override fun insert(pNode: PNode): Publisher<PNode> {
+        logger.atFine().log("operation=insert pNode=%s", pNode)
         fromRegistries(MongoClients.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()))
         return Single.fromPublisher(pu.insertOne(pNode))
@@ -30,6 +35,7 @@ open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCreden
     }
 
     override fun findByProperty(property: String, value: String): Publisher<PNode> {
+        logger.atFine().log("operation=findByProperty prop=%s value=%s", property, value)
         return pu.find(Filters.eq(property, value), PNode::class.java)
     }
 

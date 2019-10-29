@@ -12,6 +12,8 @@ dependencies {
     implementation(platform("org.jetbrains.kotlin:kotlin-bom"))
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    implementation("com.google.flogger:flogger:0.4")
+    implementation("com.google.flogger:flogger-system-backend:0.4")
     testImplementation("org.jetbrains.kotlin:kotlin-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
 }

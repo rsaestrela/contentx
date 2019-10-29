@@ -21,7 +21,7 @@ internal class RootPersistentNodeTest {
 
     @BeforeTest
     fun clearDatabase() {
-        Single.fromPublisher(testingPersistenceUnit.dropCollection()).subscribe { r -> print("Collection dropped: $r") }
+        Single.fromPublisher(testingPersistenceUnit.dropCollection()).subscribe()
     }
 
     @Test
@@ -79,6 +79,23 @@ internal class RootPersistentNodeTest {
         testChild.assertComplete()
         testChild.assertValue { n -> n.name() == "raul" }
         testChild.assertValue { n -> n.id().length == 36 }
+
+    }
+
+    @Test
+    fun shouldBeAbleToCreateRootChildrenNodes() {
+
+        val repository: Repository = PersistentRepository(repositoryCredential)
+
+        for (i in 1..10) {
+            val child = repository.root().flatMap { r -> r.addChild("test-child-${i}", mapOf()) }
+            val testChild = child.test().await()
+            testChild.assertComplete()
+            testChild.assertValue { n -> n.name() == "test-child-${i}" }
+            testChild.assertValue { n -> n.id().length == 36 }
+        }
+
+        repository.root().map { r -> r.children().test().assertValueCount(10).await() }
 
     }
 
