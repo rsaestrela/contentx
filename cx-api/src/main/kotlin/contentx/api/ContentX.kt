@@ -1,6 +1,5 @@
 package contentx.api
 
-import org.slf4j.LoggerFactory.getLogger
 import ratpack.guice.BindingsSpec
 import ratpack.guice.Guice
 import ratpack.handling.Chain
@@ -12,14 +11,11 @@ import ratpack.server.ServerConfigBuilder
 object ContentX {
 
     @JvmStatic
-    private val LOGGER = getLogger(ContentX::class.java)
-
-    @JvmStatic
     fun main(args: Array<String>) {
         try {
             createServer().start()
         } catch (e: Exception) {
-            LOGGER.error("TODO")
+            // TODO Logging
         }
     }
 

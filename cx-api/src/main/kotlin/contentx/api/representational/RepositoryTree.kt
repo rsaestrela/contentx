@@ -2,7 +2,6 @@ package contentx.api.representational
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import contentx.core.Node
-import kotlinx.collections.immutable.persistentMapOf
 
 class RepositoryTree(private val rootNode: Node) {
 
@@ -24,26 +23,20 @@ class RepositoryTree(private val rootNode: Node) {
         lateinit var name: String
 
         @JsonProperty
-        lateinit var path: String
+        var path: String = "TODO"
 
         @JsonProperty
-        var properties: Map<String, Any> = persistentMapOf()
+        var properties: Map<String, Any> = hashMapOf()
 
         @JsonProperty
         var children: List<NodeV> = arrayListOf()
 
-        // TODO: rework async
         fun representational(node: Node): NodeV {
             val nodeV = NodeV()
             nodeV.id = node.id()
             nodeV.name = node.name()
-            nodeV.path = node.path().blockingGet()
             nodeV.properties = node.properties()
-            val childrenN = node.children().blockingIterable().toCollection(arrayListOf())
-            childrenN.forEach { n ->
-                val childNodeV = representational(n)
-                nodeV.addChild(childNodeV)
-            }
+            node.children().map { c -> nodeV.addChild(representational(c)) }.subscribe()
             return nodeV
         }
 

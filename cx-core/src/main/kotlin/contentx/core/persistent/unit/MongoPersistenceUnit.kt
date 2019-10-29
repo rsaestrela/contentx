@@ -1,5 +1,6 @@
 package contentx.core.persistent.unit
 
+import com.google.common.flogger.FluentLogger
 import com.mongodb.MongoClientSettings
 import com.mongodb.MongoCredential
 import com.mongodb.client.model.Filters
@@ -13,7 +14,6 @@ import org.bson.codecs.configuration.CodecRegistries.fromRegistries
 import org.bson.codecs.configuration.CodecRegistry
 import org.bson.codecs.pojo.PojoCodecProvider
 import org.reactivestreams.Publisher
-import com.google.common.flogger.FluentLogger
 
 
 open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCredential) : PersistenceUnit {
@@ -53,6 +53,7 @@ open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCreden
                         mongoRepositoryCredential.database,
                         mongoRepositoryCredential.password.toCharArray()))
                 .codecRegistry(codecRegistry)
+                .applyToConnectionPoolSettings { z -> z.maxWaitQueueSize(1000) }
                 .build()
     }
 

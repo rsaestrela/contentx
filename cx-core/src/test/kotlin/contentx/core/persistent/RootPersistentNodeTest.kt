@@ -2,27 +2,11 @@ package contentx.core.persistent
 
 import contentx.core.Node
 import contentx.core.Repository
-import contentx.core.persistent.unit.MongoRepositoryCredential
-import io.reactivex.Single
-import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class RootPersistentNodeTest {
+internal class RootPersistentNodeTest : AbstractNodeTest() {
 
-    private val repositoryCredential = MongoRepositoryCredential.Builder()
-            .user("tester")
-            .password("password")
-            .database("contentx")
-            .collection("data")
-            .build()
-
-    private val testingPersistenceUnit = MongoTestingPersistenceUnit(repositoryCredential)
-
-    @BeforeTest
-    fun clearDatabase() {
-        Single.fromPublisher(testingPersistenceUnit.dropCollection()).subscribe()
-    }
 
     @Test
     fun shouldCreateRootNode() {
@@ -31,6 +15,7 @@ internal class RootPersistentNodeTest {
 
         val root = repository.root()
         val testRoot = root.test().await()
+
         testRoot.assertComplete()
         testRoot.assertValue { n -> n.name() == "root" }
         testRoot.assertValue { n -> n.id().length == 36 }
