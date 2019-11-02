@@ -1,9 +1,10 @@
 package contentx.api
 
-import contentx.core.RepositoryRoot
+import contentx.core.Node
 import contentx.core.persistent.PersistentRepository
 import contentx.core.persistent.unit.MongoRepositoryCredential
-import io.reactivex.Single
+import io.reactivex.Maybe
+import ratpack.handling.Context
 import javax.inject.Singleton
 
 @Singleton
@@ -18,8 +19,12 @@ class ContentServiceImpl : ContentService {
 
     private var persistentRepository: PersistentRepository = PersistentRepository(repositoryCredential)
 
-    override fun getContent(): Single<RepositoryRoot> {
-        return persistentRepository.root()
+    init {
+        persistentRepository.root().subscribe()
+    }
+
+    override fun getContent(context: Context, uri: String): Maybe<out Node> {
+        return persistentRepository.resolve(uri)
     }
 
 }

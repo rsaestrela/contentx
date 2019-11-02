@@ -1,10 +1,11 @@
 package contentx.api
 
-import contentx.core.RepositoryRoot
-import io.reactivex.Single
+import contentx.core.Node
+import io.reactivex.Maybe
+import ratpack.handling.Context
 
 interface ContentService {
 
-    fun getContent(): Single<RepositoryRoot>
+    fun getContent(context: Context, uri: String): Maybe<out Node>
 
 }

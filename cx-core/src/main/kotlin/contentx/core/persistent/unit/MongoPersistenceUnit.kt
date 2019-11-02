@@ -6,7 +6,7 @@ import com.mongodb.MongoCredential
 import com.mongodb.client.model.Filters
 import com.mongodb.reactivestreams.client.MongoClients
 import com.mongodb.reactivestreams.client.MongoCollection
-import contentx.core.Property
+import contentx.core.CxConstant
 import contentx.core.persistent.PNode
 import io.reactivex.Single
 import org.bson.codecs.configuration.CodecRegistries.fromProviders
@@ -27,15 +27,15 @@ open class MongoPersistenceUnit(mongoRepositoryCredential: MongoRepositoryCreden
     protected val pu: MongoCollection<PNode> = getCollection(mongoRepositoryCredential)
 
     override fun insert(pNode: PNode): Publisher<PNode> {
-        logger.atFine().log("operation=insert pNode=%s", pNode)
+        logger.atInfo().log("operation=insert pNode=%s", pNode)
         fromRegistries(MongoClients.getDefaultCodecRegistry(),
                 fromProviders(PojoCodecProvider.builder().automatic(true).build()))
         return Single.fromPublisher(pu.insertOne(pNode))
-                .flatMapPublisher { findByProperty(Property.ID.key, pNode._id) }
+                .flatMapPublisher { findByProperty(CxConstant.ID.v, pNode._id) }
     }
 
     override fun findByProperty(property: String, value: String): Publisher<PNode> {
-        logger.atFine().log("operation=findByProperty prop=%s value=%s", property, value)
+        logger.atInfo().log("operation=findByProperty prop=%s value=%s", property, value)
         return pu.find(Filters.eq(property, value), PNode::class.java)
     }
 
