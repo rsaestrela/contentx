@@ -1,8 +1,12 @@
 dist: trusty
 language: java
+services:
+  - docker
 jdk:
   - oraclejdk8
 before_install:
+  - docker pull mongo
+  - docker compose up
   - chmod +x gradlew
   - chmod +x gradle/wrapper/gradle-wrapper.jar
 script:
