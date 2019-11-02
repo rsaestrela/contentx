@@ -7,6 +7,6 @@ interface Repository {
 
     fun root(): Single<RepositoryRoot>
 
-    fun resolve(path: String): Maybe<Node>
+    fun resolve(path: String): Maybe<out Node>
 
 }

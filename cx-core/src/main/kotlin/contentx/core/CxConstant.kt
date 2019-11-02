@@ -1,6 +1,6 @@
 package contentx.core
 
-enum class Property(val key: String) {
+enum class CxConstant(val v: String) {
     ID("_id"),
     NAME("name"),
     PARENT("parent"),

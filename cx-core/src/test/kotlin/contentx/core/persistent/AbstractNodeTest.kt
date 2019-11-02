@@ -17,7 +17,7 @@ internal abstract class AbstractNodeTest {
 
     @BeforeTest
     fun clearDatabase() {
-        Single.fromPublisher(testingPersistenceUnit.dropCollection()).subscribe()
+        Single.fromPublisher(testingPersistenceUnit.dropCollection()).test().await()
     }
 
 }

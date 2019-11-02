@@ -1,15 +1,15 @@
 package contentx.core.state
 
+import contentx.core.CxConstant
 import contentx.core.Node
-import contentx.core.Property
 import contentx.core.RepositoryRoot
 import io.reactivex.Maybe
 import io.reactivex.Single
 
-class RootStateNode : SimpleStateNode(Property.ROOT.key, null, mapOf()), RepositoryRoot {
+class RootStateNode : SimpleStateNode(CxConstant.ROOT.v, null, mapOf()), RepositoryRoot {
 
     override fun id(): String {
-        return Property.ROOT.key
+        return CxConstant.ROOT.v
     }
 
     override fun path(): Single<String> {
