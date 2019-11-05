@@ -1,10 +1,26 @@
-package contentx.core.persistent.unit
+package contentx.core
 
 class MongoRepositoryCredential private constructor(
-        val user: String,
-        val password: String,
-        val database: String,
-        val collection: String) : RepositoryCredential {
+        private val user: String,
+        private val password: String,
+        private val database: String,
+        private val collection: String) : RepositoryCredential {
+
+    override fun user(): String {
+        return user
+    }
+
+    override fun password(): String {
+        return password
+    }
+
+    override fun database(): String {
+        return database
+    }
+
+    override fun collection(): String {
+        return collection
+    }
 
     data class Builder(
             var user: String = "",

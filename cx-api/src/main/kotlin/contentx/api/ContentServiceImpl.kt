@@ -1,8 +1,9 @@
 package contentx.api
 
+import contentx.core.CxRepository
+import contentx.core.MongoRepositoryCredential
 import contentx.core.Node
-import contentx.core.persistent.PersistentRepository
-import contentx.core.persistent.unit.MongoRepositoryCredential
+import contentx.core.RepositoryType
 import io.reactivex.Maybe
 import ratpack.handling.Context
 import javax.inject.Singleton
@@ -17,7 +18,7 @@ class ContentServiceImpl : ContentService {
             .collection("data")
             .build()
 
-    private var persistentRepository: PersistentRepository = PersistentRepository(repositoryCredential)
+    private var persistentRepository: CxRepository = CxRepository.get(RepositoryType.MONGO, repositoryCredential)
 
     init {
         persistentRepository.root().subscribe()

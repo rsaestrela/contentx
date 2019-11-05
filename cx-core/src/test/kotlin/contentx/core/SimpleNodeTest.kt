@@ -1,14 +1,25 @@
-package contentx.core.persistent
+package contentx.core
 
-import contentx.core.Node
-import contentx.core.Repository
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import kotlin.test.Ignore
 import kotlin.test.Test
 
-internal class SimplePersistentNodeTest : AbstractNodeTest() {
+@RunWith(Parameterized::class)
+class SimpleNodeTest(private val repository: Repository) : AbstractRepositoryTest() {
 
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters
+        fun data() = listOf(
+                CxRepository.get(RepositoryType.MAP),
+                CxRepository.get(RepositoryType.MONGO, RepositoryCredentialUtil.testingCredential)
+        )
+    }
+
+    @Ignore
     @Test
     fun shouldCreateChildrenNodes() {
-        val repository: Repository = PersistentRepository(repositoryCredential)
         repository.root().map { r -> testTree(r, 5) }.test().await()
     }
 
@@ -26,9 +37,9 @@ internal class SimplePersistentNodeTest : AbstractNodeTest() {
     }
 
     @Suppress("UNCHECKED_CAST")
+    @Ignore
     @Test
     fun shouldAcceptPropertiesOnConstruction() {
-        val repository: Repository = PersistentRepository(repositoryCredential)
         val propertiesMap = propertiesMap()
         val child = repository.root().flatMap { r -> r.addChild("test-child", propertiesMap) }
         val testChild = child.test().await()

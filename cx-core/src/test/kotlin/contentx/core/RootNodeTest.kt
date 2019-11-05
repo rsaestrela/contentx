@@ -1,22 +1,31 @@
-package contentx.core.persistent
+package contentx.core
 
-import contentx.core.Node
-import contentx.core.Repository
+
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import kotlin.test.Ignore
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-internal class RootPersistentNodeTest : AbstractNodeTest() {
+@RunWith(Parameterized::class)
+class RootNodeTest(private val repository: Repository) : AbstractRepositoryTest() {
 
+    companion object {
+        @JvmStatic
+        @Parameterized.Parameters
+        fun data() = listOf(
+                CxRepository.get(RepositoryType.MAP)
+        )
+    }
 
     @Test
     fun shouldCreateRootNode() {
-
-        val repository: Repository = PersistentRepository(repositoryCredential)
 
         val root = repository.root()
         val testRoot = root.test().await()
 
         testRoot.assertComplete()
+        testRoot.assertValueCount(1)
         testRoot.assertValue { n -> n.name() == "root" }
         testRoot.assertValue { n -> n.id().length == 36 }
 
@@ -29,7 +38,10 @@ internal class RootPersistentNodeTest : AbstractNodeTest() {
     @Test
     fun shouldNotAcceptProperties() {
 
-        val repository: Repository = PersistentRepository(repositoryCredential)
+        val rootS = repository.root()
+        val testRoot = rootS.test().await()
+        testRoot.assertComplete()
+        testRoot.assertValueCount(1)
 
         repository.root()
                 .flatMapMaybe { r -> r.putProperty("prop", "any") }
@@ -39,38 +51,27 @@ internal class RootPersistentNodeTest : AbstractNodeTest() {
 
     }
 
+    @Ignore
     @Test
     fun rootNodeShouldNotContainAnyChildNode() {
-
-        val repository: Repository = PersistentRepository(repositoryCredential)
-
-        val childrenP = repository.root().flatMapPublisher { r -> r.children() }
-        childrenP.test().await()
-
-        val children = mutableListOf<Node>()
-        childrenP.subscribe { node -> children += node }
+        val children = repository.root().flatMapPublisher { r -> r.children() }.blockingIterable().toCollection(arrayListOf())
         assertEquals(listOf<Node>(), children)
-
     }
 
     @Test
     fun shouldBeAbleToCreateRootChildNode() {
 
-        val repository: Repository = PersistentRepository(repositoryCredential)
-
-        val child = repository.root().flatMap { r -> r.addChild("raul", mapOf()) }
+        val child = repository.root().flatMap { r -> r.addChild("test", mapOf()) }
         val testChild = child.test().await()
 
         testChild.assertComplete()
-        testChild.assertValue { n -> n.name() == "raul" }
+        testChild.assertValue { n -> n.name() == "test" }
         testChild.assertValue { n -> n.id().length == 36 }
 
     }
 
     @Test
     fun shouldBeAbleToCreateRootChildrenNodes() {
-
-        val repository: Repository = PersistentRepository(repositoryCredential)
 
         for (i in 1..10) {
             val child = repository.root().flatMap { r -> r.addChild("test-child-${i}", mapOf()) }

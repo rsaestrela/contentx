@@ -1,10 +1,8 @@
-package contentx.core.persistent
+package contentx.core
 
-import contentx.core.Node
-import contentx.core.persistent.unit.PersistenceUnit
 import io.reactivex.Single
 
-open class SimplePersistentNode(pNode: PNode, pu: PersistenceUnit) : AbstractPersistentNode(pNode, pu) {
+open class PersistentNode(pNode: PNode, pu: PersistenceUnit) : AbstractNode(pNode, pu) {
 
     override fun id(): String {
         return pNode._id

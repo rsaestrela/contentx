@@ -1,16 +1,13 @@
-package contentx.core.persistent
+package contentx.core
 
-import contentx.core.CxConstant
-import contentx.core.Node
-import contentx.core.persistent.unit.PersistenceUnit
 import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.reactivestreams.Publisher
 
-abstract class AbstractPersistentNode(protected val pNode: PNode,
-                                      protected val pu: PersistenceUnit) : Node {
+abstract class AbstractNode(protected val pNode: PNode,
+                            protected val pu: PersistenceUnit) : Node {
 
     override fun name(): String {
         return pNode.name
@@ -30,7 +27,7 @@ abstract class AbstractPersistentNode(protected val pNode: PNode,
     }
 
     override fun children(): Flowable<Node> {
-        val findPublisher: Publisher<PNode> = pu.findByProperty(CxConstant.PARENT.v, pNode._id)
+        val findPublisher: Publisher<PNode?> = pu.findByProperty(CxConstant.PARENT.v, pNode._id)
         return Flowable.fromPublisher(findPublisher).map { pn -> PNode.fromNode(pn, pu) }
     }
 

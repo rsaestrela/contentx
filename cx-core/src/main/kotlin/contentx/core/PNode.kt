@@ -1,8 +1,5 @@
-package contentx.core.persistent
+package contentx.core
 
-import contentx.core.Node
-import contentx.core.RepositoryRoot
-import contentx.core.persistent.unit.PersistenceUnit
 import io.reactivex.Maybe
 import io.reactivex.Single
 import java.util.*
@@ -38,15 +35,15 @@ class PNode {
         }
 
         fun fromPNode(pNode: PNode, pu: PersistenceUnit): Single<RepositoryRoot> {
-            return Single.just(pNode).map { p -> RootPersistentNode(p, pu) }
+            return Single.just(pNode).map { p -> RootNode(p, pu) }
         }
 
         fun fromNode(pn: PNode, pu: PersistenceUnit): Node {
-            return SimplePersistentNode(pn, pu)
+            return PersistentNode(pn, pu)
         }
 
-        fun maybeSimple(pn: Single<PNode>, pu: PersistenceUnit): Maybe<Node> {
-            return pn.flatMapMaybe { p -> Maybe.just(SimplePersistentNode(p, pu)) }
+        fun maybeSimple(pn: Single<PNode?>, pu: PersistenceUnit): Maybe<Node> {
+            return pn.flatMapMaybe { p -> Maybe.just(PersistentNode(p, pu)) }
         }
 
     }

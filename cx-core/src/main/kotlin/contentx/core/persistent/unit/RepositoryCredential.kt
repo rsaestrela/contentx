@@ -1,3 +1,0 @@
-package contentx.core.persistent.unit
-
-interface RepositoryCredential
