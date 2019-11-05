@@ -20,13 +20,10 @@ class MapPersistenceUnit : PersistenceUnit {
     override fun findByProperty(property: String, value: String): Publisher<PNode?> {
         logger.atInfo().log("operation=findByProperty prop=%s value=%s", property, value)
         if (property == CxConstant.ID.v) {
-            return Maybe.just(map[value]).toFlowable()
+            val node = map[value]
+            return if (node != null) Maybe.just(node).toFlowable() else Maybe.empty<PNode?>().toFlowable()
         }
         return when (CxConstant.lookup(property)) {
-            CxConstant.ID -> {
-                val node = map.values.find { o -> o._id == value }
-                return if (node != null) Maybe.just(node).toFlowable() else Maybe.empty<PNode?>().toFlowable()
-            }
             CxConstant.NAME -> {
                 val node = map.values.find { o -> o.name == value }
                 return if (node != null) Maybe.just(node).toFlowable() else Maybe.empty<PNode?>().toFlowable()

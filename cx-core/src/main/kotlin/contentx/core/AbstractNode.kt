@@ -2,6 +2,7 @@ package contentx.core
 
 import io.reactivex.Flowable
 import io.reactivex.Maybe
+import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 import org.reactivestreams.Publisher
@@ -22,8 +23,8 @@ abstract class AbstractNode(protected val pNode: PNode,
     }
 
     override fun parent(): Maybe<Node?> {
-        val parent = pu.findByProperty(CxConstant.PARENT.v, pNode.parent)
-        return Maybe.fromSingle(Single.fromPublisher(parent).map { pn -> PNode.fromNode(pn, pu) })
+        val parent = pu.findByProperty(CxConstant.ID.v, pNode.parent)
+        return Observable.fromPublisher(parent).switchIfEmpty(Observable.empty()).firstElement().map { pn -> PNode.fromNode(pn, pu) }
     }
 
     override fun children(): Flowable<Node> {
